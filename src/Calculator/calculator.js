@@ -4,7 +4,6 @@ import "./calculator.css";
 class Calculator extends React.Component {
     constructor(props) {
         super(props);
-        //TODO: need to figure out all the vars and declare states and handlers
         this.state = {
             N: 0,
             R: 0,
@@ -23,6 +22,7 @@ class Calculator extends React.Component {
         this.handlefiChange = this.handlefiChange.bind(this);
         this.handlefcChange = this.handlefcChange.bind(this);
         this.handleLChange = this.handleLChange.bind(this);
+        this.getQuery = this.getQuery.bind(this);
     }
     handleNChange = (event) => {
         this.setState({N: event.target.value});
@@ -48,10 +48,31 @@ class Calculator extends React.Component {
     handleLChange = (event) => {
         this.setState({L: event.target.value});
     }
-    // create function called calculateN that multiplies all state values together except N to get N
     calculateN = () => {
-        this.setState({N: this.state.R * this.state.fp * this.state.ne * this.state.fl * this.state.fi * this.state.fc * this.state.L});
+        this.setState({N: this.state.R * this.state.fp * this.state.ne * this.state.fl * this.state.fi * this.state.fc * this.state.L},
+            () => {
+                document.location.href = `?R=${this.state.R}&fp=${this.state.fp}&ne=${this.state.ne}&fl=${this.state.fl}&fi=${this.state.fi}&fc=${this.state.fc}&L=${this.state.L}&N=${this.state.N}`
+                this.getQuery();
+            });
     }
+    getQuery = () => {
+        const params = new URLSearchParams(window.location.search)
+        this.setState({
+            R: params.get('R') || 0,
+            fp: params.get('fp') || 0,
+            ne: params.get('ne') || 0,
+            fl: params.get('fl') || 0,
+            fi: params.get('fi') || 0,
+            fc: params.get('fc') || 0,
+            L: params.get('L') || 0,
+            N: params.get('N') || 0,
+        });
+    }
+
+    componentDidMount() {
+        this.getQuery();
+    }
+
     render() {
         return (
             <div>
